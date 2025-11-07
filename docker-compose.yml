@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: vehicle_db
+    environment:
+      POSTGRES_DB: vehicledb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mock-f1:
+    image: wiremock/wiremock:2.35.0
+    container_name: mock_f1
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./mocks/mock-f1:/home/wiremock
+
+  mock-f2:
+    image: wiremock/wiremock:2.35.0
+    container_name: mock_f2
+    ports:
+      - "8082:8080"
+    volumes:
+      - ./mocks/mock-f2:/home/wiremock
+
+  mock-f3:
+    image: wiremock/wiremock:2.35.0
+    container_name: mock_f3
+    ports:
+      - "8083:8080"
+    volumes:
+      - ./mocks/mock-f3:/home/wiremock
+
+  app:
+    build: .
+    container_name: vehicle_analysis_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/vehicledb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      F1_SOAP_ENDPOINT: http://mock-f1:8080/f1
+      F2_REST_ENDPOINT: http://mock-f2:8080/f2
+      F3_REST_ENDPOINT: http://mock-f3:8080/f3
+    depends_on:
+      - db
+      - mock-f1
+      - mock-f2
+      - mock-f3
+
+volumes:
+  pgdata:

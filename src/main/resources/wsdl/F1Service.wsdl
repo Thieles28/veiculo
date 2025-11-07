@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+        xmlns="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:tns="http://www.example.com/f1service"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.example.com/f1service"
+        name="F1Service">
+
+    <types>
+        <xsd:schema targetNamespace="http://www.example.com/f1service">
+            <xsd:element name="GetVehicleDataRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="vin" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="GetVehicleDataResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="renajud" type="xsd:boolean"/>
+                        <xsd:element name="recall" type="xsd:boolean"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </types>
+
+    <message name="GetVehicleDataRequest">
+        <part name="parameters" element="tns:GetVehicleDataRequest"/>
+    </message>
+
+    <message name="GetVehicleDataResponse">
+        <part name="parameters" element="tns:GetVehicleDataResponse"/>
+    </message>
+
+    <portType name="F1ServicePortType">
+        <operation name="GetVehicleData">
+            <input message="tns:GetVehicleDataRequest"/>
+            <output message="tns:GetVehicleDataResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="F1ServiceSoapBinding" type="tns:F1ServicePortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <operation name="GetVehicleData">
+            <soap:operation soapAction="http://www.example.com/f1service/GetVehicleData"/>
+            <input><soap:body use="literal"/></input>
+            <output><soap:body use="literal"/></output>
+        </operation>
+    </binding>
+
+    <service name="F1Service">
+        <port name="F1ServicePort" binding="tns:F1ServiceSoapBinding">
+            <soap:address location="http://localhost:8080/soap/F1Service"/>
+        </port>
+    </service>
+</definitions>
