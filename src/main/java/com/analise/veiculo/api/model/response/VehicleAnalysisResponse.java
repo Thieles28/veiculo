@@ -16,6 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 public class VehicleAnalysisResponse {
     private String vin;
+    private String idInputType;
+    private String vinCanonical;
     private ConstraintsResponse constraints;
     private InfractionsResponse infractions;
     private List<SupplierStatusResponse> suppliers;

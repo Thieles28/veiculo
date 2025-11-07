@@ -13,8 +13,7 @@ import java.util.List;
 public class F1Client {
 
     public F1Response getVehicleData() {
-        boolean renajud = true;
-        boolean recall = false;
+        String simulatedVin = "9BWZZZ377VT004251";
 
         List<InfractionsResponse> infractions = List.of(
                 InfractionsResponse.builder()
@@ -28,9 +27,11 @@ public class F1Client {
         );
 
         return F1Response.builder()
+                .idInputType(simulatedVin)
+                .vinCanonical(simulatedVin)
                 .constraints(ConstraintsResponse.builder()
-                        .renajud(renajud)
-                        .recall(recall)
+                        .renajud(true)
+                        .recall(false)
                         .build())
                 .infractions(InfractionsResponse.builder()
                         .count(infractions.size())

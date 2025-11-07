@@ -12,6 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class F1Response {
+    private String idInputType;
+    private String vinCanonical;
     private ConstraintsResponse constraints;
     private InfractionsResponse infractions;
     private List<SupplierStatusResponse> suppliers;

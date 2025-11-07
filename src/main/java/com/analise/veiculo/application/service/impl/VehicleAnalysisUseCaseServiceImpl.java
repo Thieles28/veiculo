@@ -37,8 +37,8 @@ public class VehicleAnalysisUseCaseServiceImpl implements VehicleAnalysisUseCase
 
             long start = System.currentTimeMillis();
 
-            CompletableFuture<F1Response> f1Future = CompletableFuture.supplyAsync(() -> f1Client.getVehicleData());
-            CompletableFuture<F3Response> f3Future = CompletableFuture.supplyAsync(() -> f3Client.getVehicleData());
+            CompletableFuture<F1Response> f1Future = CompletableFuture.supplyAsync(f1Client::getVehicleData);
+            CompletableFuture<F3Response> f3Future = CompletableFuture.supplyAsync(f3Client::getVehicleData);
 
             CompletableFuture.allOf(f1Future, f3Future).join();
 
@@ -79,6 +79,8 @@ public class VehicleAnalysisUseCaseServiceImpl implements VehicleAnalysisUseCase
 
     private VehicleAnalysisResponse mergeResponses(F1Response f1, F3Response f3) {
         return VehicleAnalysisResponse.builder()
+                .idInputType(f1.getIdInputType())
+                .vinCanonical(f1.getVinCanonical())
                 .constraints(f1.getConstraints())
                 .infractions(f1.getInfractions())
                 .metrics(f3.getMetrics())
@@ -90,6 +92,8 @@ public class VehicleAnalysisUseCaseServiceImpl implements VehicleAnalysisUseCase
     private VehicleAnalysisResponse mergeF2(VehicleAnalysisResponse base, F2Response f2) {
         return VehicleAnalysisResponse.builder()
                 .vin(base.getVin())
+                .idInputType(base.getIdInputType())
+                .vinCanonical(base.getVinCanonical())
                 .constraints(base.getConstraints())
                 .infractions(base.getInfractions())
                 .metrics(base.getMetrics())
