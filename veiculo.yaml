@@ -1,0 +1,84 @@
+openapi: 3.0.3
+info:
+  title: Vehicle Analysis API
+  version: 1.0.0
+paths:
+  /api/v1/veiculos/{idveiculo}/analise:
+    get:
+      summary: Analisa dados veiculares agregando múltiplas fontes
+      parameters:
+        - name: idveiculo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: Idempotency-Key
+          in: header
+          schema:
+            type: string
+      responses:
+        '200':
+          description: VehicleAnalysis
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleAnalysis'
+components:
+  schemas:
+    SupplierStatus:
+      type: object
+      properties:
+        supplier:
+          type: string
+        type:
+          type: string
+        status:
+          type: string
+          enum: [SUCCESS, FAILED, PARTIAL, TIMEOUT]
+        latencyMs:
+          type: integer
+        error:
+          type: string
+        data:
+          type: object
+    Constraints:
+      type: object
+      properties:
+        renajud:
+          type: boolean
+        recall:
+          type: boolean
+        notes:
+          type: array
+          items:
+            type: string
+    Infractions:
+      type: object
+      properties:
+        count:
+          type: integer
+        details:
+          type: array
+          items:
+            type: object
+    VehicleAnalysis:
+      type: object
+      properties:
+        vin:
+          type: string
+        vinResolved:
+          type: boolean
+        hasConstraints:
+          type: boolean
+        constraints:
+          $ref: '#/components/schemas/Constraints'
+        infractions:
+          $ref: '#/components/schemas/Infractions'
+        supplierStatus:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupplierStatus'
+        estimatedCostCents:
+          type: integer
+        traceId:
+          type: string
